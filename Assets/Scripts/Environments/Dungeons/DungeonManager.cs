@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+using System.IO;
 
 namespace zombie
 {
@@ -24,6 +24,51 @@ namespace zombie
 
         // For now focus on the ground floor
         // Will add floors in the future
+
+        [Header("Rooms")]
+        [SerializeField] private int currentRoomCount;
+        [SerializeField] private int maxRoomCount;
+
+        [Header("Room Prefabs")]
+        [SerializeField] private string folderPath = "Assets/Components/Environments/Rooms/";
+
+        [SerializeField] private List<GameObject> prefabList = new List<GameObject>();
+
+        [SerializeField] private RoomCreator roomCreator;
+
+        private void Awake()
+        {
+            currentRoomCount = 0;
+            maxRoomCount = Random.Range(1, 20);
+        }
+
+        void Start()
+        {
+            LoadPrefabsFromFolders();
+            roomCreator.Initialize(prefabList);
+            roomCreator.CreateInitialRoom();
+        }
+
+        private void LoadPrefabsFromFolders()
+        {
+            for (int i = 0; i < 6; i++) // Loop through folders H_Paths_0 to H_Paths_5
+            {
+                string folderName = "H_Paths_" + i;
+                string fullPath = Path.Combine(folderPath, folderName);
+
+                if (Directory.Exists(fullPath))
+                {
+                    string[] prefabPaths = Directory.GetFiles(fullPath, "*.prefab");
+                    foreach (string prefabPath in prefabPaths)
+                    {
+                        GameObject prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                        if (prefab != null)
+                        {
+                            prefabList.Add(prefab);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
-
