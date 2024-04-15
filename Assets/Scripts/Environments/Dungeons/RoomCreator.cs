@@ -108,5 +108,10 @@ namespace zombie
         {
             return roomCreated;
         }
+        
+        public void SetRoomCreated(bool flag)
+        {
+            roomCreated = flag;
+        }
     }
 }

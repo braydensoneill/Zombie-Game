@@ -31,9 +31,25 @@ namespace zombie
             // Stop generating rooms if currentRoomCount reaches maxRoomCount
             if (currentRoomCount >= maxRoomCount)
             {
+                // Check for remaining RoomCreators in the Dungeon game object
+                RoomCreator[] remainingRoomCreators = dungeonGameObject.GetComponentsInChildren<RoomCreator>(true);
+                foreach (RoomCreator remainingRoomCreator in remainingRoomCreators)
+                {
+                    // Use the remaining RoomCreators to create Room_1111
+                    if (!remainingRoomCreator.IsRoomCreated())
+                    {
+                        // Instantiate Room_1111 prefab as a child of the Dungeon GameObject
+                        GameObject newRoom = Instantiate(Room_1111_Prefab, remainingRoomCreator.transform.position, Quaternion.identity);
+                        newRoom.transform.parent = dungeonGameObject.transform;
+
+                        // Set flag to true indicating that room has been created
+                        remainingRoomCreator.SetRoomCreated(true);
+                    }
+                }
                 return;
             }
 
+            // Continue generating rooms if currentRoomCount is less than maxRoomCount
             RoomCreator[] newRoomCreators = FindObjectsOfType<RoomCreator>();
             foreach (RoomCreator newRoomCreator in newRoomCreators)
             {

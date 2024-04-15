@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 660581758185188846}
+  - component: {fileID: -5464721119973865132}
   m_Layer: 0
   m_Name: Room_1011
   m_TagString: Untagged
@@ -36,6 +37,18 @@ Transform:
   - {fileID: 4486587263046601901}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-5464721119973865132
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 127989825302330341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdcb9d770ebca0d4f9fb376ccfe999bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &320066533578186474
 GameObject:
   m_ObjectHideFlags: 0
