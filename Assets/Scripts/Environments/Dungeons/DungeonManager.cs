@@ -6,9 +6,13 @@ namespace zombie
 {
     public class DungeonManager : MonoBehaviour
     {
-        [Header("Rooms")]
+        [Header("Set Dungeon Information")]
+        public int maxRoomCountLow;
+        public int maxRoomCountHigh;
+
+        [Header("Dungeon Information")]
         [SerializeField] private int currentRoomCount;
-        [SerializeField] private int maxRoomCount; // Renamed from requiredRoomCount
+        [SerializeField] private int maxRoomCount;
 
         [Header("Room Prefabs")]
         [SerializeField] private string folderPath = "Assets/Components/Environments/Rooms/";
@@ -20,7 +24,7 @@ namespace zombie
         private void Awake()
         {
             currentRoomCount = 0;
-            maxRoomCount = Random.Range(1, 20); // Renamed from requiredRoomCount
+            maxRoomCount = Random.Range(maxRoomCountLow, maxRoomCountHigh); // Renamed from requiredRoomCount
             LoadPrefabsFromFolders();
             InitializeRoomCreators();
             InvokeRepeating("CheckForNewRoomCreators", 0.15f, 0.15f); // Invoke method with delay and repeat every 0.5 seconds

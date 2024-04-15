@@ -46,10 +46,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentRoomCount: 0
-  requiredRoomCount: 0
+  maxRoomCount: 50
   folderPath: Assets/Components/Environments/Rooms/
   dungeonGameObject: {fileID: 2947326614225748646}
-  Room_1111_Prefab: {fileID: 0}
+  Room_1111_Prefab: {fileID: 8703971218151119886, guid: 777666a42600c2f4896404db71c858ee, type: 3}
 --- !u!1001 &5176747317330130731
 PrefabInstance:
   m_ObjectHideFlags: 0
