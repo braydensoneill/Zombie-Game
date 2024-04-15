@@ -6,52 +6,169 @@ namespace zombie
 {
     public class DungeonManager : MonoBehaviour
     {
-        // Every dungeon will begin with a room that has a door to the south
-
-        // Every door/space will have an empty gameobject located at the orgin of the next room
-        // These empty gameobjects will have a CreateRoom script attached to them
-
-        // These gameobjects will check which direction the door/space created it from
-        // Spawn any room with a door/space from this direction
-        // This should cause a ripple effect
-
-        // Every room will have a Room script which contains details about the current room
-        // For example, a 'hasPaths' variable
-        // This will check if there is more than door/space
-        
-        // If too many rooms are being created
-        // Only spawn rooms where hasPaths = false
-
-        // For now focus on the ground floor
-        // Will add floors in the future
-
         [Header("Rooms")]
         [SerializeField] private int currentRoomCount;
-        [SerializeField] private int maxRoomCount;
+        [SerializeField] private int requiredRoomCount;
 
         [Header("Room Prefabs")]
         [SerializeField] private string folderPath = "Assets/Components/Environments/Rooms/";
+        [SerializeField] private GameObject dungeonGameObject;
+        [SerializeField] private GameObject Room_1111_Prefab;
 
-        [SerializeField] private List<GameObject> prefabList = new List<GameObject>();
-
-        [SerializeField] private RoomCreator roomCreator;
+        private List<GameObject> prefabList = new List<GameObject>();
 
         private void Awake()
         {
             currentRoomCount = 0;
-            maxRoomCount = Random.Range(1, 20);
+            requiredRoomCount = Random.Range(1, 20);
+            LoadPrefabsFromFolders();
+            InitializeRoomCreators();
+            CreateInitialRoom();
+            InvokeRepeating("CheckForNewRoomCreators", 0.1f, 0.1f); // Invoke method with delay and repeat every 0.5 seconds
         }
 
-        void Start()
+        private void CreateInitialRoom()
         {
-            LoadPrefabsFromFolders();
-            roomCreator.Initialize(prefabList);
-            roomCreator.CreateInitialRoom();
+            List<GameObject> filteredPrefabs = FilterPrefabsForInitialRoom();
+            if (filteredPrefabs.Count == 0)
+            {
+                Debug.LogWarning("No room with '3' in the specified position of the name found in the prefab list.");
+                return;
+            }
+
+            int randomIndex = Random.Range(0, filteredPrefabs.Count);
+            GameObject randomPrefab = filteredPrefabs[randomIndex];
+
+            GameObject newRoom = InstantiateRoom(randomPrefab);
+            if (newRoom != null)
+            {
+                currentRoomCount++;
+            }
+        }
+
+        private void CheckForNewRoomCreators()
+        {
+            RoomCreator[] newRoomCreators = FindObjectsOfType<RoomCreator>();
+            foreach (RoomCreator newRoomCreator in newRoomCreators)
+            {
+                // Check if the room creator has already created a room
+                if (!newRoomCreator.IsRoomCreated())
+                {
+                    // Check if the room creator is touching a plane game object
+                    Collider[] colliders = Physics.OverlapSphere(newRoomCreator.transform.position, 0.5f);
+                    foreach (Collider collider in colliders)
+                    {
+                        if (collider.gameObject.CompareTag("Ground"))
+                        {
+                            // If touching a plane, destroy the room creator and return
+                            Destroy(newRoomCreator.gameObject);
+                            return;
+                        }
+                    }
+
+                    // If not touching a plane, proceed to create the room
+                    newRoomCreator.Initialize(prefabList, dungeonGameObject);
+                    newRoomCreator.CreateRoom();
+                    currentRoomCount++;
+
+                    // If the required room count is reached, exit the method
+                    if (currentRoomCount >= requiredRoomCount)
+                    {
+                        return;
+                    }
+                }
+            }
+
+            // If the required room count is not reached and there are remaining room creators,
+            // continue creating rooms until the required count is reached or until a room creator
+            // touching a plane is encountered
+            if (currentRoomCount < requiredRoomCount)
+            {
+                foreach (RoomCreator newRoomCreator in newRoomCreators)
+                {
+                    // Check if the room creator has already created a room
+                    if (!newRoomCreator.IsRoomCreated())
+                    {
+                        // Check if the room creator is touching a plane game object
+                        Collider[] colliders = Physics.OverlapSphere(newRoomCreator.transform.position, 0.5f);
+                        foreach (Collider collider in colliders)
+                        {
+                            if (collider.gameObject.CompareTag("Ground"))
+                            {
+                                // If touching a plane, destroy the room creator and break out of the loop
+                                Destroy(newRoomCreator.gameObject);
+                                break;
+                            }
+                        }
+
+                        // If not touching a plane, proceed to create the room
+                        if (!newRoomCreator.IsRoomCreated())
+                        {
+                            // Check if the room count allows for creating another room
+                            if (currentRoomCount < requiredRoomCount)
+                            {
+                                // Create Room_1111 prefab
+                                GameObject newRoom = InstantiateRoom(Room_1111_Prefab);
+                                if (newRoom != null)
+                                {
+                                    currentRoomCount++;
+                                }
+                            }
+                        }
+
+                        // If the required room count is reached, exit the method
+                        if (currentRoomCount >= requiredRoomCount)
+                        {
+                            return;
+                        }
+                    }
+                }
+            }
+
+            // Loop through children under the "dungeon" gameobject and check if any room needs to be created
+            foreach (Transform child in dungeonGameObject.transform)
+            {
+                RoomCreator roomCreator = child.GetComponent<RoomCreator>();
+                if (roomCreator != null && !roomCreator.IsRoomCreated())
+                {
+                    // If a room creator is found and it hasn't created a room yet, create the room
+                    roomCreator.Initialize(prefabList, dungeonGameObject);
+                    roomCreator.CreateRoom();
+                    currentRoomCount++;
+
+                    // If the required room count is reached, exit the method
+                    if (currentRoomCount >= requiredRoomCount)
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+
+        private GameObject InstantiateRoom(GameObject prefab)
+        {
+            GameObject newRoom = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+            newRoom.transform.parent = dungeonGameObject.transform;
+            return newRoom;
+        }
+
+        private List<GameObject> FilterPrefabsForInitialRoom()
+        {
+            List<GameObject> filteredPrefabs = new List<GameObject>();
+            foreach (GameObject prefab in prefabList)
+            {
+                string prefabName = prefab.name;
+                if (prefabName.Length >= 8 && prefabName.Substring(5, 1) == "2")
+                {
+                    filteredPrefabs.Add(prefab);
+                }
+            }
+            return filteredPrefabs;
         }
 
         private void LoadPrefabsFromFolders()
         {
-            for (int i = 0; i < 6; i++) // Loop through folders H_Paths_0 to H_Paths_5
+            for (int i = 0; i < 6; i++)
             {
                 string folderName = "H_Paths_" + i;
                 string fullPath = Path.Combine(folderPath, folderName);
@@ -70,5 +187,17 @@ namespace zombie
                 }
             }
         }
+
+        private void InitializeRoomCreators()
+        {
+            RoomCreator[] foundRoomCreators = FindObjectsOfType<RoomCreator>();
+            foreach (RoomCreator roomCreator in foundRoomCreators)
+            {
+                roomCreator.Initialize(prefabList, dungeonGameObject);
+                roomCreator.CreateRoom();
+            }
+        }
+
+        public int RequiredRoomCount { get { return requiredRoomCount; } }
     }
 }

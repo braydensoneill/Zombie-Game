@@ -310,8 +310,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7263f07b29002344fba7c6cc46f0f1aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  folderPath: Assets/Components/Environments/Rooms/
-  prefabList: []
 --- !u!1 &1592409552
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,8 +355,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fca5125cba0c21646945b16303a4b1ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomCreators: []
   currentRoomCount: 0
   maxRoomCount: 0
+  folderPath: Assets/Components/Environments/Rooms/
+  prefabList: []
 --- !u!1 &1732581177
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,7 +529,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1354513071150670675, guid: faef1946625003840970eed26dec4ed8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
