@@ -5,6 +5,11 @@ namespace zombie
 {
     public class RoomCreator : MonoBehaviour
     {
+        [SerializeField] private bool cameFromNorth;
+        [SerializeField] private bool cameFromEast;
+        [SerializeField] private bool cameFromSouth;
+        [SerializeField] private bool cameFromWest;
+
         private List<GameObject> prefabList;
         private bool roomCreated = false;
         private GameObject dungeonGameObject;

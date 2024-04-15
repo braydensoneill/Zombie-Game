@@ -24,7 +24,7 @@ namespace zombie
             LoadPrefabsFromFolders();
             InitializeRoomCreators();
             CreateInitialRoom();
-            InvokeRepeating("CheckForNewRoomCreators", 0.1f, 0.1f); // Invoke method with delay and repeat every 0.5 seconds
+            InvokeRepeating("CheckForNewRoomCreators", 0.15f, 0.15f); // Invoke method with delay and repeat every 0.5 seconds
         }
 
         private void CreateInitialRoom()

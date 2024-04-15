@@ -494,6 +494,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3569315506058448483}
     m_Modifications:
+    - target: {fileID: -1354513071150670675, guid: faef1946625003840970eed26dec4ed8, type: 3}
+      propertyPath: cameFromEast
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 565718660151849567, guid: faef1946625003840970eed26dec4ed8, type: 3}
       propertyPath: m_Name
       value: RoomCreator
@@ -556,6 +560,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2713946935854731740}
     m_Modifications:
+    - target: {fileID: -1354513071150670675, guid: faef1946625003840970eed26dec4ed8, type: 3}
+      propertyPath: cameFromNorth
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 565718660151849567, guid: faef1946625003840970eed26dec4ed8, type: 3}
       propertyPath: m_Name
       value: RoomCreator
